@@ -1,7 +1,9 @@
 // components/EnquiryModal.jsx
 import { useState, useContext, createContext } from "react";
 import { X } from "lucide-react";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import "../components/Style/EnquiryModal.css"
 // Context for global modal access
 const EnquiryModalContext = createContext();
 
@@ -22,6 +24,18 @@ export const EnquiryModalProvider = ({ children }) => {
 };
 
 const EnquiryModal = ({ onClose }) => {
+  const [phone, setPhone] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = {
+      name: e.target.name.value,
+      phone,
+    };
+    console.log("Form Submitted:", formData);
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
       <div className="bg-black text-white p-8 rounded-xl w-full max-w-md relative shadow-xl">
@@ -33,27 +47,37 @@ const EnquiryModal = ({ onClose }) => {
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="text-xl font-semibold mb-6 tracking-wide text-[#997736] ">
+        <h2 className="text-xl font-semibold mb-6 tracking-wide text-[#997736]">
           ENQUIRE NOW
         </h2>
 
-        <form className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name Input */}
           <input
             type="text"
+            name="name"
             placeholder="Name"
             className="w-full px-4 py-3 rounded-md bg-transparent border border-gray-600 focus:border-[#997736] outline-none"
+            required
           />
 
-          {/* Mobile Number Input */}
-          <div className="flex items-center border border-gray-600 focus:border-[#997736] rounded-md">
-            <span className="px-3 py-3 bg-gray-800 text-sm">🇮🇳</span>
-            <input
-              type="tel"
-              placeholder="Mobile Number"
-              className="flex-1 px-3 py-3 bg-transparent  outline-none"
-            />
-          </div>
+          {/* Phone Input with Country Selector */}
+        <PhoneInput
+  country={"in"}
+  value={phone}
+  onChange={setPhone}
+  inputProps={{
+    name: "phone",
+    required: true,
+  }}
+  containerClass="w-full" // makes it responsive
+  inputClass="!w-full !bg-transparent !text-white !py-3 !pl-12 !pr-3 !rounded-md !border !border-gray-600 focus:!border-[#997736] !outline-none"
+  buttonClass="!bg-gray-800 !border-none !rounded-l-md"
+  dropdownClass="!bg-black !text-white"
+  searchClass="!bg-black !text-white"
+  enableSearch={true} // optional: search inside dropdown
+/>
+
 
           {/* Consent Text */}
           <p className="text-xs text-gray-400 leading-relaxed">
